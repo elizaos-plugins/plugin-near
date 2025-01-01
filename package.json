@@ -19,5 +19,45 @@
   "peerDependencies": {
     "whatwg-url": "7.1.0",
     "form-data": "4.0.1"
+  },
+  "pluginType": "elizaos:plugin:1.0.0",
+  "pluginParameters": {
+    "type": "object",
+    "required": ["nearWalletSecretKey", "nearWalletPublicKey", "nearAddress", "slippage", "rpcUrl"],
+    "properties": {
+      "nearWalletSecretKey": {
+        "type": "string",
+        "description": "NEAR wallet secret key"
+      },
+      "nearWalletPublicKey": {
+        "type": "string",
+        "description": "NEAR wallet public key"
+      },
+      "nearAddress": {
+        "type": "string",
+        "description": "NEAR address"
+      },
+      "slippage": {
+        "type": "string",
+        "description": "Slippage tolerance"
+      },
+      "rpcUrl": {
+        "type": "string",
+        "description": "RPC URL"
+      },
+      "nearEnv": {
+        "type": "string",
+        "description": "NEAR environment (optional)",
+        "enum": ["mainnet", "testnet"]
+      }
+    }
+  },
+  "pluginEnv": {
+    "NEAR_WALLET_SECRET_KEY": "nearWalletSecretKey",
+    "NEAR_WALLET_PUBLIC_KEY": "nearWalletPublicKey",
+    "NEAR_ADDRESS": "nearAddress",
+    "SLIPPAGE": "slippage",
+    "RPC_URL": "rpcUrl",
+    "NEAR_ENV": "nearEnv"
   }
 }
