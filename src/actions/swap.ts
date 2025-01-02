@@ -191,13 +191,19 @@ export const executeSwap: Action = {
         return true;
     },
     description: "Perform a token swap using Ref Finance.",
-    handler: async (
+    handler: async ({
+        runtime,
+        message,
+        state,
+        options,
+        callback,
+    }: {
         runtime: IAgentRuntime,
         message: Memory,
         state: State,
-        _options: { [key: string]: unknown },
-        callback?: HandlerCallback
-    ): Promise<boolean> => {
+        options: any,
+        callback: HandlerCallback
+    }): Promise<boolean> => {
         // Initialize Ref SDK with testnet environment
         init_env(runtime.getSetting("NEAR_NETWORK") || "testnet");
         // Compose state

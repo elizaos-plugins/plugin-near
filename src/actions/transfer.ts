@@ -103,13 +103,19 @@ export const executeTransfer: Action = {
         return true; // Add your validation logic here
     },
     description: "Transfer NEAR tokens to another account",
-    handler: async (
+    handler: async ({
+        runtime,
+        message,
+        state,
+        options,
+        callback,
+    }: {
         runtime: IAgentRuntime,
         message: Memory,
         state: State,
-        _options: { [key: string]: unknown },
-        callback?: HandlerCallback
-    ): Promise<boolean> => {
+        options: any,
+        callback: HandlerCallback
+    }): Promise<boolean> => {
         // Initialize or update state
         if (!state) {
             state = (await runtime.composeState(message)) as State;
