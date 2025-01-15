@@ -1,0 +1,24 @@
+
+
+> @elizaos/plugin-near@0.1.8+build.1 build /Users/a/eliza-wrangler/packages/plugin-near
+> tsup --format esm,cjs --dts
+
+[34mCLI[39m Building entry: src/index.ts
+[34mCLI[39m Using tsconfig: tsconfig.json
+[34mCLI[39m tsup v8.3.5
+[34mCLI[39m Using tsup config: /Users/a/eliza-wrangler/packages/plugin-near/tsup.config.ts
+[34mCLI[39m Target: es2020
+[34mCLI[39m Cleaning output folder
+[34mESM[39m Build start
+[34mCJS[39m Build start
+Entry module "dist/index.cjs" is using named and default exports together. Consumers of your bundle will have to use `chunk.default` to access the default export, which may not be what you want. Use `output.exports: "named"` to disable this warning.
+DTS Build start
+[32mESM[39m [1mdist/index.js     [22m[32m17.73 KB[39m
+[32mESM[39m [1mdist/index.js.map [22m[32m41.00 KB[39m
+[32mESM[39m ⚡️ Build success in 194ms
+[32mCJS[39m [1mdist/index.cjs     [22m[32m18.24 KB[39m
+[32mCJS[39m [1mdist/index.cjs.map [22m[32m41.23 KB[39m
+[32mCJS[39m ⚡️ Build success in 194ms
+DTS ⚡️ Build success in 1998ms
+DTS dist/index.d.ts  132.00 B
+DTS dist/index.d.cts 132.00 B
