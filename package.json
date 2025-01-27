@@ -15,9 +15,7 @@
             }
         }
     },
-    "files": [
-        "dist"
-    ],
+    "files": ["dist"],
     "dependencies": {
         "@elizaos/core": "workspace:*",
         "@ref-finance/ref-sdk": "^1.4.6",
@@ -35,5 +33,34 @@
     "peerDependencies": {
         "whatwg-url": "7.1.0",
         "form-data": "4.0.1"
+    },
+    "agentConfig": {
+        "pluginType": "elizaos:client:1.0.0",
+        "pluginParameters": {
+            "MVX_PRIVATE_KEY": {
+                "type": "string"
+            },
+            "MVX_NETWORK": {
+                "type": "string"
+            },
+            "NEAR_WALLET_SECRET_KEY": {
+                "type": "string"
+            },
+            "NEAR_WALLET_PUBLIC_KEY": {
+                "type": "string"
+            },
+            "NEAR_ADDRESS": {
+                "type": "string"
+            },
+            "NEAR_NETWORK": {
+                "type": "string"
+            },
+            "NEAR_RPC_URL": {
+                "type": "string"
+            },
+            "NEAR_SLIPPAGE": {
+                "type": "string"
+            }
+        }
     }
 }
