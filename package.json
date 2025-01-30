@@ -1,5 +1,5 @@
 {
-    "name": "@elizaos/plugin-near",
+    "name": "@elizaos-plugins/plugin-near",
     "version": "0.1.8+build.1",
     "type": "module",
     "main": "dist/index.js",
@@ -15,7 +15,9 @@
             }
         }
     },
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "dependencies": {
         "@elizaos/core": "workspace:*",
         "@ref-finance/ref-sdk": "^1.4.6",
