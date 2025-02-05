@@ -22,7 +22,7 @@ var PROVIDER_CONFIG = {
   explorerUrl: `https://${process.env.NEAR_NETWORK || "testnet"}.nearblocks.io`,
   MAX_RETRIES: 3,
   RETRY_DELAY: 2e3,
-  SLIPPAGE: process.env.NEAR_SLIPPAGE ? parseInt(process.env.NEAR_SLIPPAGE) : 1
+  SLIPPAGE: process.env.NEAR_SLIPPAGE ? Number.parseInt(process.env.NEAR_SLIPPAGE) : 1
 };
 var WalletProvider = class {
   constructor(accountId) {
@@ -63,7 +63,7 @@ var WalletProvider = class {
     return this.account;
   }
   async fetchWithRetry(url, options = {}) {
-    let lastError;
+    let lastError = new Error("Failed to fetch after all retries");
     for (let i = 0; i < PROVIDER_CONFIG.MAX_RETRIES; i++) {
       try {
         const response = await fetch(url, options);
@@ -78,7 +78,7 @@ var WalletProvider = class {
           await new Promise(
             (resolve) => setTimeout(
               resolve,
-              PROVIDER_CONFIG.RETRY_DELAY * Math.pow(2, i)
+              PROVIDER_CONFIG.RETRY_DELAY * 2 ** i
             )
           );
         }
@@ -328,15 +328,16 @@ var executeSwap = {
   description: "Perform a token swap using Ref Finance.",
   handler: async (runtime, message, state, _options, callback) => {
     refSdk.init_env(runtime.getSetting("NEAR_NETWORK") || "testnet");
+    let currentState;
     if (!state) {
-      state = await runtime.composeState(message);
+      currentState = await runtime.composeState(message);
     } else {
-      state = await runtime.updateRecentMessageState(state);
+      currentState = await runtime.updateRecentMessageState(state);
     }
-    const walletInfo = await walletProvider.get(runtime, message, state);
-    state.walletInfo = walletInfo;
+    const walletInfo = await walletProvider.get(runtime, message, currentState);
+    currentState.walletInfo = walletInfo;
     const swapContext = core.composeContext({
-      state,
+      state: currentState,
       template: swapTemplate
     });
     const response = await core.generateObject({
@@ -344,8 +345,10 @@ var executeSwap = {
       context: swapContext,
       modelClass: core.ModelClass.LARGE
     });
-    core.elizaLogger.log("Response:", response);
-    if (!response.inputTokenId || !response.outputTokenId || !response.amount) {
+    function isSwapResponse(obj) {
+      return typeof obj === "object" && obj !== null && "inputTokenId" in obj && "outputTokenId" in obj && "amount" in obj;
+    }
+    if (!isSwapResponse(response)) {
       core.elizaLogger.log("Missing required parameters, skipping swap");
       const responseMsg = {
         text: "I need the input token ID, output token ID, and amount to perform the swap"
@@ -384,7 +387,8 @@ var executeSwap = {
             contractId: tx.receiverId,
             methodName: functionCall.methodName,
             args: functionCall.args,
-            gas: functionCall.gas,
+            gas: BigInt(functionCall.gas),
+            // Convert string to BigInt
             attachedDeposit: BigInt(
               functionCall.amount === refSdk.ONE_YOCTO_NEAR ? "1" : functionCall.amount
             )
@@ -434,7 +438,7 @@ var executeSwap = {
     ]
   ]
 };
-function isTransferContent(runtime, content) {
+function isTransferContent(_runtime, content) {
   return typeof content.recipient === "string" && (typeof content.amount === "string" || typeof content.amount === "number");
 }
 var transferTemplate = `Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.
@@ -477,10 +481,11 @@ async function transferNEAR(runtime, recipient, amount) {
     nodeUrl
   });
   const account = await nearConnection.account(accountId);
-  const result = await account.sendMoney(
-    recipient,
-    BigInt(nearApiJs.utils.format.parseNearAmount(amount))
-  );
+  const parsedAmount = nearApiJs.utils.format.parseNearAmount(amount);
+  if (!parsedAmount) {
+    throw new Error("Failed to parse NEAR amount");
+  }
+  const result = await account.sendMoney(recipient, BigInt(parsedAmount));
   return result.transaction.hash;
 }
 var executeTransfer = {
@@ -491,13 +496,14 @@ var executeTransfer = {
   },
   description: "Transfer NEAR tokens to another account",
   handler: async (runtime, message, state, _options, callback) => {
+    let currentState;
     if (!state) {
-      state = await runtime.composeState(message);
+      currentState = await runtime.composeState(message);
     } else {
-      state = await runtime.updateRecentMessageState(state);
+      currentState = await runtime.updateRecentMessageState(state);
     }
     const transferContext = core.composeContext({
-      state,
+      state: currentState,
       template: transferTemplate
     });
     const content = await core.generateObject({
