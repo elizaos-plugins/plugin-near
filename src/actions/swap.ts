@@ -80,7 +80,7 @@ async function swapToken(
         const tokenOut = await ftGetTokenMetadata(outputTokenId);
         const networkId = runtime.getSetting("NEAR_NETWORK") || "testnet";
         const nodeUrl =
-            runtime.getSetting("NEAR_RPC_URL") || "https://rpc.testnet.near.org";
+            runtime.getSetting("NEAR_RPC_URL") || "https://near-testnet.lava.build";
 
         // Get all pools for estimation
         // ratedPools, unRatedPools,
@@ -296,7 +296,7 @@ export const executeSwap: Action = {
                 keyStore,
                 nodeUrl:
                     runtime.getSetting("NEAR_RPC_URL") ||
-                    "https://rpc.testnet.near.org",
+                    "https://near-testnet.lava.build",
             });
 
             // Execute swap

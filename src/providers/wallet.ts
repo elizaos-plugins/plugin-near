@@ -14,7 +14,9 @@ const PROVIDER_CONFIG = {
     networkId: process.env.NEAR_NETWORK || "testnet",
     nodeUrl:
         process.env.NEAR_RPC_URL ||
-        `https://rpc.${process.env.NEAR_NETWORK || "testnet"}.near.org`,
+        (process.env.NEAR_NETWORK === "mainnet" 
+            ? "https://near.lava.build"
+            : "https://near-testnet.lava.build"),
     walletUrl: `https://${process.env.NEAR_NETWORK || "testnet"}.mynearwallet.com/`,
     helperUrl: `https://helper.${process.env.NEAR_NETWORK || "testnet"}.near.org`,
     explorerUrl: `https://${process.env.NEAR_NETWORK || "testnet"}.nearblocks.io`,
