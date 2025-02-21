@@ -33,7 +33,7 @@ export function getConfig(
         case "mainnet":
             return {
                 networkId: "mainnet",
-                nodeUrl: "https://rpc.mainnet.near.org",
+                nodeUrl: "https://near.lava.build",
                 walletUrl: "https://wallet.near.org",
                 WRAP_NEAR_CONTRACT_ID: "wrap.near",
                 REF_FI_CONTRACT_ID: "v2.ref-finance.near",
@@ -45,7 +45,7 @@ export function getConfig(
         case "testnet":
             return {
                 networkId: "testnet",
-                nodeUrl: "https://rpc.testnet.near.org",
+                nodeUrl: "https://near-testnet.lava.build",
                 walletUrl: "https://wallet.testnet.near.org",
                 indexerUrl: "https://testnet-indexer.ref-finance.com",
                 WRAP_NEAR_CONTRACT_ID: "wrap.testnet",
@@ -57,7 +57,7 @@ export function getConfig(
         default:
             return {
                 networkId: "mainnet",
-                nodeUrl: "https://rpc.mainnet.near.org",
+                nodeUrl: "https://near.lava.build",
                 walletUrl: "https://wallet.near.org",
                 REF_FI_CONTRACT_ID: "v2.ref-finance.near",
                 WRAP_NEAR_CONTRACT_ID: "wrap.near",
