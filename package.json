@@ -5,19 +5,16 @@
     "main": "dist/index.js",
     "module": "dist/index.js",
     "types": "dist/index.d.ts",
-    "exports": {
-        "./package.json": "./package.json",
-        ".": {
-            "import": {
-                "@elizaos/source": "./src/index.ts",
-                "types": "./dist/index.d.ts",
-                "default": "./dist/index.js"
-            }
-        }
-    },
     "files": [
         "dist"
     ],
+    "scripts": {
+        "build": "rm -rf dist && tsup --format esm,cjs --dts",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "prepublishOnly": "pnpm build"
+    },
+    
     "dependencies": {
         "@elizaos/core": "^0.1.9",
         "@ref-finance/ref-sdk": "^1.4.6",
@@ -27,10 +24,8 @@
         "tsup": "8.3.5",
         "zod": "3.23.8"
     },
-    "scripts": {
-        "build": "tsup --format esm,cjs --dts",
-        "test": "vitest run",
-        "test:watch": "vitest"
+    "devDependencies": {
+        "typescript": "5.6.3"
     },
     "peerDependencies": {
         "form-data": "4.0.1",

@@ -1,4 +1,4 @@
-import { Plugin } from '@elizaos/core/src/types';
+import { Plugin } from '@elizaos/core';
 
 declare const nearPlugin: Plugin;
 
