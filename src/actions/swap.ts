@@ -22,6 +22,7 @@ import {
 } from "@ref-finance/ref-sdk";
 import { walletProvider } from "../providers/wallet";
 import type { KeyPairString } from "near-api-js/lib/utils";
+import { z, type ZodType } from "zod";
 
 // Add interface for swap response
 interface SwapResponse {
@@ -29,6 +30,12 @@ interface SwapResponse {
     outputTokenId: string;
     amount: string;
 }
+
+export const SwapSchema: ZodType = z.object({
+    inputTokenId: z.string(),
+    outputTokenId: z.string(),
+    amount: z.string(),
+});
 
 // Add type for swap result
 interface SwapTransaction {
@@ -253,6 +260,7 @@ export const executeSwap: Action = {
             runtime,
             context: swapContext,
             modelClass: ModelClass.LARGE,
+            schema: SwapSchema,
         }) as unknown as SwapResponse;
 
         // Type guard for response validation

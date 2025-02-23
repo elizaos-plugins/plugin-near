@@ -13,14 +13,19 @@ import {
 } from "@elizaos/core";
 import { connect, keyStores, utils } from "near-api-js";
 import type { KeyPairString } from "near-api-js/lib/utils";
-import { utils as nearUtils } from "near-api-js";
-// import BigNumber from "bignumber.js";
+import { z, type ZodType } from "zod";
 
 export interface TransferContent extends Content {
     recipient: string;
     amount: string | number;
     tokenAddress?: string; // Optional for native NEAR transfers
 }
+
+export const TransferSchema: ZodType = z.object({
+    recipient: z.string(),
+    amount: z.string().or(z.number()),
+    tokenAddress: z.string().or(z.null()),
+});
 
 function isTransferContent(
     _runtime: IAgentRuntime,
@@ -133,6 +138,7 @@ export const executeTransfer: Action = {
             runtime,
             context: transferContext,
             modelClass: ModelClass.SMALL,
+            schema: TransferSchema,
         });
 
         // Validate transfer content
