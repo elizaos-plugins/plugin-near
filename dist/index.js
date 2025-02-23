@@ -337,7 +337,7 @@ var executeSwap = {
       state: currentState,
       template: swapTemplate
     });
-    const response = await generateObject({
+    const { object: response } = await generateObject({
       runtime,
       context: swapContext,
       modelClass: ModelClass.LARGE,
@@ -509,7 +509,7 @@ var executeTransfer = {
       state: currentState,
       template: transferTemplate
     });
-    const content = await generateObject({
+    const { object: content } = await generateObject({
       runtime,
       context: transferContext,
       modelClass: ModelClass.SMALL,

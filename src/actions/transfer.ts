@@ -134,7 +134,7 @@ export const executeTransfer: Action = {
         });
 
         // Generate transfer content
-        const content = await generateObject({
+        const { object: content } = await generateObject({
             runtime,
             context: transferContext,
             modelClass: ModelClass.SMALL,

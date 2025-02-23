@@ -256,12 +256,12 @@ export const executeSwap: Action = {
             template: swapTemplate,
         });
 
-        const response = await generateObject({
+        const { object: response } = await generateObject({
             runtime,
             context: swapContext,
             modelClass: ModelClass.LARGE,
             schema: SwapSchema,
-        }) as unknown as SwapResponse;
+        });
 
         // Type guard for response validation
         function isSwapResponse(obj: unknown): obj is SwapResponse {
