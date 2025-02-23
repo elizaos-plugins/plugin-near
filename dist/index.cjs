@@ -7,6 +7,7 @@ var nearApiJs = require('near-api-js');
 var BigNumber = require('bignumber.js');
 var NodeCache = require('node-cache');
 var refSdk = require('@ref-finance/ref-sdk');
+var zod = require('zod');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
@@ -16,7 +17,7 @@ var NodeCache__default = /*#__PURE__*/_interopDefault(NodeCache);
 // src/providers/wallet.ts
 var PROVIDER_CONFIG = {
   networkId: process.env.NEAR_NETWORK || "testnet",
-  nodeUrl: process.env.NEAR_RPC_URL || `https://rpc.${process.env.NEAR_NETWORK || "testnet"}.near.org`,
+  nodeUrl: process.env.NEAR_RPC_URL || (process.env.NEAR_NETWORK === "mainnet" ? "https://near.lava.build" : "https://neart.lava.build"),
   walletUrl: `https://${process.env.NEAR_NETWORK || "testnet"}.mynearwallet.com/`,
   helperUrl: `https://helper.${process.env.NEAR_NETWORK || "testnet"}.near.org`,
   explorerUrl: `https://${process.env.NEAR_NETWORK || "testnet"}.nearblocks.io`,
@@ -187,6 +188,11 @@ var walletProvider = {
     }
   }
 };
+var SwapSchema = zod.z.object({
+  inputTokenId: zod.z.string(),
+  outputTokenId: zod.z.string(),
+  amount: zod.z.string()
+});
 async function checkStorageBalance(account, contractId) {
   try {
     const balance = await account.viewFunction({
@@ -207,7 +213,7 @@ async function swapToken(runtime, inputTokenId, outputTokenId, amount, slippageT
     const tokenIn = await refSdk.ftGetTokenMetadata(inputTokenId);
     const tokenOut = await refSdk.ftGetTokenMetadata(outputTokenId);
     const networkId = runtime.getSetting("NEAR_NETWORK") || "testnet";
-    const nodeUrl = runtime.getSetting("NEAR_RPC_URL") || "https://rpc.testnet.near.org";
+    const nodeUrl = runtime.getSetting("NEAR_RPC_URL") || "https://neart.lava.build";
     const { simplePools } = await refSdk.fetchAllPools();
     const swapTodos = await refSdk.estimateSwap({
       tokenIn,
@@ -343,7 +349,8 @@ var executeSwap = {
     const response = await core.generateObject({
       runtime,
       context: swapContext,
-      modelClass: core.ModelClass.LARGE
+      modelClass: core.ModelClass.LARGE,
+      schema: SwapSchema
     });
     function isSwapResponse(obj) {
       return typeof obj === "object" && obj !== null && "inputTokenId" in obj && "outputTokenId" in obj && "amount" in obj;
@@ -370,7 +377,7 @@ var executeSwap = {
       const nearConnection = await nearApiJs.connect({
         networkId: runtime.getSetting("NEAR_NETWORK") || "testnet",
         keyStore,
-        nodeUrl: runtime.getSetting("NEAR_RPC_URL") || "https://rpc.testnet.near.org"
+        nodeUrl: runtime.getSetting("NEAR_RPC_URL") || "https://neart.lava.build"
       });
       const swapResult = await swapToken(
         runtime,
@@ -438,6 +445,11 @@ var executeSwap = {
     ]
   ]
 };
+var TransferSchema = zod.z.object({
+  recipient: zod.z.string(),
+  amount: zod.z.string().or(zod.z.number()),
+  tokenAddress: zod.z.string().or(zod.z.null())
+});
 function isTransferContent(_runtime, content) {
   return typeof content.recipient === "string" && (typeof content.amount === "string" || typeof content.amount === "number");
 }
@@ -466,7 +478,7 @@ Extract the following information about the requested token transfer:
 Respond with a JSON markdown block containing only the extracted values.`;
 async function transferNEAR(runtime, recipient, amount) {
   const networkId = runtime.getSetting("NEAR_NETWORK") || "testnet";
-  const nodeUrl = runtime.getSetting("NEAR_RPC_URL") || "https://rpc.testnet.near.org";
+  const nodeUrl = runtime.getSetting("NEAR_RPC_URL") || "https://neart.lava.build";
   const accountId = runtime.getSetting("NEAR_ADDRESS");
   const secretKey = runtime.getSetting("NEAR_WALLET_SECRET_KEY");
   if (!accountId || !secretKey) {
@@ -509,7 +521,8 @@ var executeTransfer = {
     const content = await core.generateObject({
       runtime,
       context: transferContext,
-      modelClass: core.ModelClass.SMALL
+      modelClass: core.ModelClass.SMALL,
+      schema: TransferSchema
     });
     if (!isTransferContent(runtime, content)) {
       core.elizaLogger.error("Invalid content for TRANSFER_NEAR action.");

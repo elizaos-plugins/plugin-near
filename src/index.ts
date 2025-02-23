@@ -1,4 +1,4 @@
-import type { Plugin } from "@elizaos/core/src/types";
+import type { Plugin } from "@elizaos/core";
 import { walletProvider } from "./providers/wallet";
 // import { executeCreateToken } from "./actions/createToken";
 import { executeSwap } from "./actions/swap";
