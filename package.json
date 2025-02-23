@@ -19,12 +19,13 @@
         "dist"
     ],
     "dependencies": {
-        "@elizaos/core": "workspace:*",
+        "@elizaos/core": "^0.1.9",
         "@ref-finance/ref-sdk": "^1.4.6",
         "bignumber.js": "9.1.2",
         "near-api-js": "5.0.1",
         "node-cache": "5.1.2",
-        "tsup": "8.3.5"
+        "tsup": "8.3.5",
+        "zod": "3.23.8"
     },
     "scripts": {
         "build": "tsup --format esm,cjs --dts",
