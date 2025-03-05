@@ -1,6 +1,6 @@
 {
     "name": "@elizaos-plugins/plugin-near",
-    "version": "0.1.9",
+    "version": "0.25.6-alpha.1",
     "type": "module",
     "main": "dist/index.js",
     "module": "dist/index.js",
@@ -16,7 +16,7 @@
     },
     
     "dependencies": {
-        "@elizaos/core": "^0.1.9",
+        "@elizaos/core": "0.25.6-alpha.1",
         "@ref-finance/ref-sdk": "^1.4.6",
         "bignumber.js": "9.1.2",
         "near-api-js": "5.0.1",
